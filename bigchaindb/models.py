@@ -33,8 +33,6 @@ class Transaction(Transaction):
             InvalidHash: if the hash of the transaction is wrong
             InvalidSignature: if the signature of the transaction is wrong
         """
-        if len(self.inputs) == 0:
-            raise ValueError('Transaction contains no inputs')
 
         input_conditions = []
         inputs_defined = all([input_.fulfills for input_ in self.inputs])
@@ -125,8 +123,12 @@ class Transaction(Transaction):
         return self
 
     @classmethod
-    def from_dict(cls, tx_body):
+    def validate_structure(cls, tx_body):
         validate_transaction_schema(tx_body)
+
+    @classmethod
+    def from_dict(cls, tx_body):
+        cls.validate_structure(tx_body)
         return super().from_dict(tx_body)
 
 
